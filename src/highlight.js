@@ -256,6 +256,7 @@ function() {
     }
 
     function endOfMode(mode, lexeme) {
+      if (typeof debugHookMode == 'function') debugHookMode(mode, lexeme, false);
       if (testRe(mode.endRe, lexeme)) {
         return mode;
       }
@@ -328,6 +329,7 @@ function() {
     }
 
     function startNewMode(mode, lexeme) {
+      if (typeof debugHookMode == 'function') debugHookMode(mode, lexeme, true);
       var markup = mode.className? buildSpan(mode.className, '', true): '';
       if (mode.returnBegin) {
         result += markup;
@@ -411,6 +413,7 @@ function() {
     var relevance = 0;
     try {
       var match, count, index = 0;
+      if (typeof debugHookLang == 'function') debugHookLang(name, relevance, true);
       while (true) {
         top.terminators.lastIndex = index;
         match = top.terminators.exec(value);
@@ -420,6 +423,7 @@ function() {
         index = match.index + count;
       }
       processLexeme(value.substr(index));
+      if (typeof debugHookLang == 'function') debugHookLang(name, relevance, false);
       for(var current = top; current.parent; current = current.parent) { // close dangling modes
         if (current.className) {
           result += '</span>';
